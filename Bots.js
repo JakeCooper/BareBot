@@ -2,7 +2,7 @@ var fs = require('fs');
 var Steam = require('steam');
 var SteamTrade = require('steam-trade');
 
-var steamIDtoTrade = '76561198009923867'
+var steamIDtoTrade = ''
 var inTrade = false;
 var inventory;
 
@@ -16,8 +16,8 @@ var bot = new Steam.SteamClient();
 var steamTrade = new SteamTrade();
 
 bot.logOn({
-    accountName: 'sirrofl360',
-     password: 'lightningrox',
+    accountName: '', //Your username here
+     password: '', //Your password here
      shaSentryfile: fs.readFileSync("sentryfileLiam")
 });
 
@@ -26,15 +26,22 @@ bot.on('loggedOn', function() {
     bot.setPersonaState(Steam.EPersonaState.Online); // to display your bot's status as "Online"
 });
 
-/*bot.on('sentry',function(sentryHash) {
-    require('fs').writeFile('sentryfile',sentryHash,function(err) {
+bot.on('sentry',function(sentryHash) {
+  fs.exists('sentryfile' + steamName, function(exists){
+    if(!exists){
+      fs.writeFile('sentryfile',sentryHash,function(err) {
       if(err){
         console.log(err);
       } else {
         console.log('Saved sentry file hash as "sentryfile"');
       }
-    });
-});*/
+      });
+    } else {
+      console.log("Sentry file already exists.")
+    }
+  })
+  
+});
 
 bot.on('webSessionID', function(sessionID){
 	steamTrade.sessionID = sessionID;
@@ -44,13 +51,13 @@ bot.on('webSessionID', function(sessionID){
             console.log(part)
         });
         steamTrade.loadInventory(730,2, function(data){
-            /*require('fs').writeFile('JSONOUTPUT.json',JSON.stringify(data),function(err) {
+            require('fs').writeFile('JSONOUTPUT.json',JSON.stringify(data),function(err) {
                 if(err){
                     console.log(err);
                 } else {
                     console.log('Saved to JSONOUTPUT.json');
                 }
-            });*/
+            });
         	inventory = data;
         });
         bot.trade(steamIDtoTrade);
@@ -61,10 +68,6 @@ bot.on('sessionStart', function(steamID){
 	inTrade = true;
 	steamTrade.open(steamID, function(){
 		console.log("trade successfully started");
-		steamTrade.chatMsg("Holy");
-		/*steamTrade.addItem(inventory[0], function(){
-			console.log(inventory[1]["id"]);
-		});*/
 	});
 });
 
@@ -78,10 +81,6 @@ steamTrade.on('ready', function(){
 
 });
 
-/*steamTrade.on('offerChanged', function(added, item){
-	
-});*/
-
 steamTrade.on('end', function(status, getItems){
 	if (status =='complete'){
 		getItems(function(items){
@@ -89,50 +88,3 @@ steamTrade.on('end', function(status, getItems){
 		});
 	}
 });
-
-
-/*steamTrade.on('end', function(status, getItems) {
-  if (status == 'complete') {
-    getItems(function(items) {
-      console.log(items);
-    });
-  }
-});*/
-
-/*bot.on('tradeResult', function(tradeID, EEconTradeResponse, SteamID){
-	//bot.respondToTrade(tradeID, true);
-	steamTrade.open(SteamID, function(){
-		console.log("trade successfully started");
-	});
-});*/
-
-/*bot.on('tradeProposed', function(tradeID, steamID){
-	bot.respondToTrade(tradeID, true);
-});*/
-
-/*bot.on('servers', function(servers) {
-  fs.writeFile('servers', JSON.stringify(servers));
-});
-
-bot.on('chatInvite', function(chatRoomID, chatRoomName, patronID) {
-  console.log('Got an invite to ' + chatRoomName + ' from ' + bot.users[patronID].playerName);
-  bot.joinChat(chatRoomID); // autojoin on invite
-});
-
-bot.on('message', function(source, message, type, chatter) {
-  // respond to both chat room and private messages
-  console.log('Received message: ' + message);
-  if (message == 'ping') {
-    bot.sendMessage(source, 'pong', Steam.EChatEntryType.ChatMsg); // ChatMsg by default
-  }
-});
-
-bot.on('chatStateChange', function(stateChange, chatterActedOn, steamIdChat, chatterActedBy) {
-  if (stateChange == Steam.EChatMemberStateChange.Kicked && chatterActedOn == bot.steamID) {
-    bot.joinChat(steamIdChat);  // autorejoin!
-  }
-});
-
-bot.on('announcement', function(group, headline) { 
-  console.log('Group with SteamID ' + group + ' has posted ' + headline);
-});*/
