@@ -87,4 +87,5 @@ steamTrade.on('end', function(status, getItems){
 			console.log(items);
 		});
 	}
+  inTrade = false;
 });
