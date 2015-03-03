@@ -60,7 +60,6 @@ bot.on('webSessionID', function(sessionID){
             });
         	inventory = data;
         });
-        bot.trade(steamIDtoTrade);
     });
 });
 
